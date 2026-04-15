@@ -17,6 +17,8 @@ from modules.generate_decal import export_decal_data
 from modules.generate_chat_bubbles import export_chat_bubbles_data
 from modules.generate_badge import export_badge_data
 from modules.generate_achievement import export_achievement_data
+from modules.generate_change_bg import export_change_background_data
+from modules.generate_login_fx import export_login_fx_data
 import sys
 import os
 
@@ -43,6 +45,8 @@ def main_menu():
         "14": export_lottery_data,
         "15": export_achievement_data,
         "16": export_mascot_head_data,
+        "17": export_change_background_data,
+        "18": export_login_fx_data
     }
     while True:
         print("\n" + "=" * 40)
@@ -64,6 +68,8 @@ def main_menu():
         print("14. 生成抽奖数据 (Lottery)")
         print("15. 生成并上传成就与印迹数据 (Achievement)")
         print("16. 生成头套数据 (MascotHead)")
+        print("17. 生成房间背景数据 (ChangeBackground)")
+        print("18. 生成登录特效数据 (LoginFX)")
 
 
         print("0. 退出程序")

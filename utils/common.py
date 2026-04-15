@@ -207,8 +207,8 @@ def upload_wiki_data(page_title, filename):
 
 def format_lua_table(input_val, indent_level=0, is_root=True):
     """递归将 Python 数据格式化为多行 Lua 适用的字符串表示喵（支持列表和字典）"""
-    indent_str = "   " * indent_level
-    next_indent_str = "   " * (indent_level + 1)
+    indent_str = "\t" * indent_level
+    next_indent_str = "\t" * (indent_level + 1)
 
     result = ""
     if isinstance(input_val, (int, float)):
@@ -220,34 +220,29 @@ def format_lua_table(input_val, indent_level=0, is_root=True):
         if not input_val:
             result = "{}"
         else:
-            # 【关键修改】检查列表中的元素是否全部为基础数据类型（字符串、整数、浮点数）喵
             is_simple_list = all(isinstance(x, (int, float, str)) for x in input_val)
 
             if is_simple_list:
-                # 简单列表（如 get 数组）：单行输出，不换行
                 inner = ", ".join(format_lua_table(x, indent_level, False) for x in input_val)
                 result = f"{{ {inner} }}"
             else:
-                # 复杂列表（如包含字典的最外层数组）：换行并应用 3 空格缩进
                 inner = ",\n".join(f"{next_indent_str}{format_lua_table(x, indent_level + 1, False)}" for x in input_val)
-                result = f"{{\n{inner}\n{indent_str}}}"
+                result = f"{{\n{inner},\n{indent_str}}}"
     elif isinstance(input_val, dict):
         if not input_val:
             result = "{}"
         else:
             inner_parts = []
             for k, v in input_val.items():
-                inner_parts.append(f'{next_indent_str}["{k}"] = {format_lua_table(v, indent_level + 1, False)}')
+                inner_parts.append(f"{next_indent_str}['{k}'] = {format_lua_table(v, indent_level + 1, False)}")
             inner = ",\n".join(inner_parts)
-            result = f"{{\n{inner}\n{indent_str}}}"
+            result = f"{{\n{inner},\n{indent_str}}}"
     else:
         result = str(input_val)
-
-    # 如果是最高层级，拼装完整的返回格式喵
     if is_root:
         return f"return {result}\n"
-
     return result
+
 
 def export_data_file(fileName, data, fileType='json'):
     """
